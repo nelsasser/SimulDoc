@@ -1,10 +1,10 @@
 package main.webapp.com.nelsasser.app.document;
 
+import com.google.gson.JsonObject;
+
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class DocumentData {
 
@@ -97,5 +97,133 @@ public class DocumentData {
     //adds struckthrough text
     private void addStrikeThroughText(TextRange textRange) {
         strikeThroughText.add(textRange);
+    }
+
+    public List<List<Character>> getLines() {
+        return lines;
+    }
+
+    public JsonObject getDataAsJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.add("bold_text", boldJson());
+        jsonObject.add("italic_text", italicJson());
+        jsonObject.add("underlined_text", underJson());
+        jsonObject.add("strikethrough_text", strikeJson());
+        jsonObject.add("color", colorJson());
+        jsonObject.add("text", textJson());
+
+        return jsonObject;
+    }
+
+    private JsonObject textJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        for(int i = 0; i < lines.size(); i++) {
+            List<Character> line = lines.get(i);
+            String str = "";
+            for(Character c : line) {
+                str += c;
+            }
+            jsonObject.addProperty("" + i, str);
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject boldJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        for(int i = 0; i < boldText.size(); i++) {
+            jsonObject.add("" + i, boldText.get(i).json());
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject italicJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        for(int i = 0; i < italicizedText.size(); i++) {
+            jsonObject.add("" + i, italicizedText.get(i).json());
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject underJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        for(int i = 0; i < underlinedText.size(); i++) {
+            jsonObject.add("" + i, underlinedText.get(i).json());
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject strikeJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        for(int i = 0; i < strikeThroughText.size(); i++) {
+            jsonObject.add("" + i, strikeThroughText.get(i).json());
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject colorJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        Set<Color> s = colorTextMap.keySet();
+        for(Color c : s) {
+            jsonObject.add(c.toString(), colorTextJson(c));
+
+        }
+
+        return jsonObject;
+    }
+
+    private JsonObject colorTextJson(Color c) {
+        JsonObject jsonObject = new JsonObject();
+
+        List<TextRange> text = colorTextMap.get(c);
+
+        for(int i = 0; i < text.size(); i++) {
+            jsonObject.add("" + i, text.get(i).json());
+        }
+
+        return jsonObject;
+    }
+
+    public static int getMaxNumChars() {
+        return MAX_NUM_CHARS;
+    }
+
+    public static String getDefaultCleaningTemplate() {
+        return DEFAULT_CLEANING_TEMPLATE;
+    }
+
+    public static Color getDefaultTextColor() {
+        return DEFAULT_TEXT_COLOR;
+    }
+
+    public List<TextRange> getBoldText() {
+        return boldText;
+    }
+
+    public List<TextRange> getItalicizedText() {
+        return italicizedText;
+    }
+
+    public List<TextRange> getUnderlinedText() {
+        return underlinedText;
+    }
+
+    public List<TextRange> getStrikeThroughText() {
+        return strikeThroughText;
+    }
+
+    public Map<Color, List<TextRange>> getColorTextMap() {
+        return colorTextMap;
     }
 }

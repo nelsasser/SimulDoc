@@ -1,5 +1,7 @@
 package main.webapp.com.nelsasser.app.document;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
+import com.google.gson.JsonObject;
 import main.webapp.com.nelsasser.app.request.EditRequest;
 import main.webapp.com.nelsasser.app.server.Client;
 
@@ -27,5 +29,25 @@ public class Document {
 
     public void addEditRequest(EditRequest request) {
         editRequests.offer(request);
+    }
+
+    public Map<String, Client> getCurrentUsers() {
+        return currentUsers;
+    }
+
+    public JsonObject getCurrentUsersJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        Set<String> set = currentUsers.keySet();
+        for(String s : set) {
+            jsonObject.add(s, currentUsers.get(s).getAsJsonObject());
+        }
+
+        return jsonObject;
+    }
+
+
+    public DocumentData getDocumentData() {
+        return documentData;
     }
 }

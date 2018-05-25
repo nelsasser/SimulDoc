@@ -1,5 +1,6 @@
 package main.webapp.com.nelsasser.app.server;
 
+import com.google.gson.JsonObject;
 import main.webapp.com.nelsasser.app.document.Document;
 
 public class Client {
@@ -16,4 +17,12 @@ public class Client {
     }
 
     public String getUID() { return uid; }
+
+    public JsonObject getAsJsonObject() {
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("id", uid);
+
+        return jsonObject;
+    }
 }

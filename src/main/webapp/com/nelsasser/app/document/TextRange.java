@@ -1,5 +1,7 @@
 package main.webapp.com.nelsasser.app.document;
 
+import com.google.gson.JsonObject;
+
 public class TextRange {
 
     private int startLine, startCharacter, endLine, endCharacter;
@@ -32,5 +34,14 @@ public class TextRange {
         }
 
         return null;
+    }
+
+    public JsonObject json() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("start_line", startLine);
+        jsonObject.addProperty("start_character", startCharacter);
+        jsonObject.addProperty("end_line", endLine);
+        jsonObject.addProperty("end_character", endCharacter);
+        return jsonObject;
     }
 }
