@@ -1,24 +1,16 @@
-package main.webapp.com.nelsasser.app.document;
+package main.webapp.com.nelsasser.app.request.editrequest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import main.webapp.com.nelsasser.app.utils.JSONHeaders;
 
 import java.lang.reflect.Type;
 
-import main.webapp.com.nelsasser.app.document.Document;
-
-public class DocumentSerializer implements JsonSerializer {
-
+public class EditRequestSerializer implements JsonSerializer {
     @Override
     public JsonElement serialize(Object o, Type type, JsonSerializationContext jsonSerializationContext) {
-        JsonObject jsonObject = new JsonObject();
-
-        Document doc = (Document) o;
-
-
-
-        return jsonObject;
+        return ((EditRequest)o).toJson();
     }
 }

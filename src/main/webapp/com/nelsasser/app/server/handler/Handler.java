@@ -1,5 +1,6 @@
 package main.webapp.com.nelsasser.app.server.handler;
 
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import main.webapp.com.nelsasser.app.server.handler.UserConnectionHandler;
@@ -25,23 +26,13 @@ public class Handler implements HttpHandler {
             return;
         }
 
+        //move the sent data to a different handler that will be more suited to parse it
         moveExchangeToUsefulHandler(httpExchange, ServerUtils.convertStreamToString(inputStream));
-
-        /*
-        //create a response
-        String response = "Pong";
-        httpExchange.sendResponseHeaders(200, response.length());
-
-        //send the response
-        OutputStream outputStream = httpExchange.getResponseBody();
-        outputStream.write(response.getBytes());
-        outputStream.close();
-        */
     }
 
     public void moveExchangeToUsefulHandler(HttpExchange httpExchange, String data) {
 
-        //if data or exchange is null end it all...
+        //if data or exchange is null stop the request
         if(data == null || httpExchange == null) {
             throw new IllegalArgumentException("Data is null or Http Exchange is null!");
         }
@@ -57,14 +48,22 @@ public class Handler implements HttpHandler {
             } catch (IOException e) {
                 System.out.println("Failed to connect user " + data);
             }
-        } else if(data.substring(0,4).equals("json")) {
-            JSONHandler jsonHandler = new JSONHandler();
+        } else {
+            //get the json header to parse the file
+            String header = new JsonParser().parse(data).getAsJsonObject().get("header").toString();
 
+            //place '/' to uncomment
+
+            //*
             try {
-                jsonHandler.handle(httpExchange, data.substring(4));
+                if(header.equals("open_document_request")) {
+                    OpenDocumentHandler openDocumentHandler = new OpenDocumentHandler();
+                    openDocumentHandler.handle(httpExchange, data);
+                }
             } catch (IOException e) {
                 System.out.println("Failed to read json data");
             }
+            //*/
         }
 
     }

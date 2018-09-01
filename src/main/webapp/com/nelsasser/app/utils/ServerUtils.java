@@ -2,10 +2,14 @@ package main.webapp.com.nelsasser.app.utils;
 
 import java.awt.*;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class ServerUtils {
+
+    private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String lower = upper.toLowerCase();
+    private static final String num = "0123456789";
+    private static final String alphanum = upper + lower + num + "_-";
 
     /**
      *
@@ -46,5 +50,17 @@ public class ServerUtils {
         }
 
         return hex;
+    }
+
+    public static String createUniqueID(int len) {
+        String id = "";
+
+        Random r = new Random();
+
+        for(int i = 0; i < len; i++) {
+            id += "" + alphanum.charAt(r.nextInt(alphanum.length() - 1));
+        }
+
+        return id;
     }
 }
