@@ -5,24 +5,20 @@ import main.webapp.com.nelsasser.app.document.Document;
 
 public class Client {
 
-    private String uid;
-    private Document currentDocument = null;
+    private String name;
+    private String docID;
+    private String password;
 
-    public Client(String uid) {
-        this.uid = uid;
+    public Client(String uid, String docID, String password) {
+        this.name = uid;
+        this.docID = docID;
+        this.password = password;
     }
 
-    public void setCurrentDocument(Document d) {
-        currentDocument = d;
-    }
+    public String getName() { return name; }
 
-    public String getUID() { return uid; }
+    public String getDocID() { return docID; }
 
-    public JsonObject getAsJsonObject() {
-        JsonObject jsonObject = new JsonObject();
+    public String getPassword() { return password; }
 
-        jsonObject.addProperty("id", uid);
-
-        return jsonObject;
-    }
 }

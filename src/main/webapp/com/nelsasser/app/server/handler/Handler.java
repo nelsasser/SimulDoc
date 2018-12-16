@@ -1,14 +1,14 @@
 package main.webapp.com.nelsasser.app.server.handler;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
-import main.webapp.com.nelsasser.app.server.handler.UserConnectionHandler;
+import main.webapp.com.nelsasser.app.server.Client;
 import main.webapp.com.nelsasser.app.utils.ServerUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 public class Handler implements HttpHandler {
 
@@ -31,39 +31,39 @@ public class Handler implements HttpHandler {
     }
 
     public void moveExchangeToUsefulHandler(HttpExchange httpExchange, String data) {
+        System.out.println("user trying to connect");
 
         //if data or exchange is null stop the request
         if(data == null || httpExchange == null) {
             throw new IllegalArgumentException("Data is null or Http Exchange is null!");
         }
 
-        //if we have a connecting user, send the exchange to a user connection handler
-        if(data.toLowerCase().contains("connecting")) {
-            //create a new user connection handler
-            UserConnectionHandler usrConctHandler = new UserConnectionHandler();
+        //System.out.println(data);
 
-            //attempt to connect user to server
-            try {
-                usrConctHandler.handle(httpExchange, data);
-            } catch (IOException e) {
-                System.out.println("Failed to connect user " + data);
-            }
-        } else {
-            //get the json header to parse the file
-            String header = new JsonParser().parse(data).getAsJsonObject().get("header").toString();
+        //get the json data
+        JsonObject parsedData = new JsonParser().parse(data).getAsJsonObject();
 
-            //place '/' to uncomment
+        try {
+            //get connection data
+            String header = parsedData.get("header").toString();
+            String username = parsedData.get("user").toString();
+            String docID = parsedData.get("id").toString();
+            String pass = parsedData.get("pass").toString();
 
-            //*
-            try {
-                if(header.equals("open_document_request")) {
-                    OpenDocumentHandler openDocumentHandler = new OpenDocumentHandler();
-                    openDocumentHandler.handle(httpExchange, data);
+            if(username.trim().equals("\"\"") || docID.trim().equals("\"\"") || pass.trim().equals("\"\"")) {
+                throw new IllegalArgumentException();
+            } else {
+                if(header.equals("\"connect\"")) {
+                    System.out.println("User " + username + " connecting to " + docID + "...");
+                } else if(header.equals("\"create\"")) {
+                    System.out.println(username + " creating document " + docID + "...");
+                    new OpenDocumentHandler().handle(new Client(username, docID, pass), httpExchange);
+                } else {
+                    System.out.println("Bad header.");
                 }
-            } catch (IOException e) {
-                System.out.println("Failed to read json data");
             }
-            //*/
+        } catch(Exception e) {
+            System.out.println("Failed to parse JSON, possible bad data");
         }
 
     }

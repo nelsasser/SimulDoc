@@ -31,7 +31,7 @@ public class JSONHandler {
         Document d = new Document();
 
         for(int i = 0; i < 10; i++) {
-            d.addClient(new Client("" + (int)(Math.random() * 100)));
+           // d.addClient(new Client("" + (int)(Math.random() * 100)));
         }
 
         return d;

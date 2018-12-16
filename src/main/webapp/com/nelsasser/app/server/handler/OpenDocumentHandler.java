@@ -1,12 +1,17 @@
 package main.webapp.com.nelsasser.app.server.handler;
 
+import com.amazonaws.services.opsworkscm.model.Server;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import main.webapp.com.nelsasser.app.DocumentKeeper;
+import main.webapp.com.nelsasser.app.document.Document;
+import main.webapp.com.nelsasser.app.manager.DocumentManager;
 import main.webapp.com.nelsasser.app.server.Client;
+import main.webapp.com.nelsasser.app.utils.ServerUtils;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class OpenDocumentHandler {
 
@@ -14,31 +19,25 @@ public class OpenDocumentHandler {
 
     }
 
-    public void handle(HttpExchange httpExchange, String data) throws IOException {
-        //get id that user wants to open
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(data).getAsJsonObject();
-        String docId = jsonObject.get("docID").toString();
-
-        //get client
-        Client client = new Client(jsonObject.get("client").getAsJsonObject().get("id").toString());
+    public void handle(Client client, HttpExchange exchange) throws IOException {
 
         //check to see if the document is already open
-        boolean docIsOpen = DocumentKeeper.isDocumentOpen(docId);
+        boolean docIsOpen = DocumentKeeper.isDocumentOpen(client.getDocID());
 
+        //if it is open, then return a failure
         if(docIsOpen) {
-            //if the document is already open, check to see if the document is shared with the user
-            boolean isShared = DocumentKeeper.getDocument(docId).isSharedWith(client);
-
-            if(!isShared) {
-
-            }
+            ServerUtils.sendResponse(ServerUtils.CLIENT_ERROR,
+                    "Document already open. Aborting creation.",
+                    exchange);
+            System.out.println("Failed to open new document.");
         } else {
-            //if document is not open, load it into a new document manager from a file
+            //if not open, open new document and return port number
+            Document document = new Document(client, client.getDocID());
+            DocumentManager documentManager = new DocumentManager(document);
+            documentManager.run();
+            int newDocPort = documentManager.getPort();
+            DocumentKeeper.openDocument(documentManager);
+            ServerUtils.sendResponse(ServerUtils.SUCCESS, Integer.toString(newDocPort), exchange);
         }
-    }
-
-    private JsonObject createResponse(boolean shared) {
-        return null;
     }
 }

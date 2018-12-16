@@ -22,7 +22,6 @@ public class DocumentDeserializer implements JsonDeserializer {
         Set<String> entries = currentUsers.keySet();
         for(String entry : entries) {
             //add each client to the list of current clients
-            doc.addClient(new Client(entry));
         }
 
         //get the document data

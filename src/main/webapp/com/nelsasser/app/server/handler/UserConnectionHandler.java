@@ -14,16 +14,6 @@ public class UserConnectionHandler {
         InputStream inputStream = httpExchange.getRequestBody();
         */
 
-        //split user id from connection message
-        String[] tokens = data.split(":");
-        try {
-            //grab user id
-            String id = tokens[1];
-            System.out.println("Creating user #" + id);
-            Client client = new Client(id);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Bad connection input, no user id submitted!");
-        }
 
         String response = "Connected succesfully";
         httpExchange.sendResponseHeaders(200, response.length());

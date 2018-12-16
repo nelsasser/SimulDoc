@@ -13,11 +13,9 @@ public class DocumentManager implements Runnable{
     Document document;
     HttpServer localServer;
 
-    public DocumentManager(int documentID) {
-    }
 
     public DocumentManager(Document d) {
-
+        this.document = d;
     }
 
     @Override

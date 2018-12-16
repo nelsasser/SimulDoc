@@ -15,13 +15,14 @@ public class EditRequestDeserializer implements JsonDeserializer {
         JsonElement jsonClient = jsonObject.get("user");
         JsonElement id = jsonClient.getAsJsonObject().get("id");
 
-        Client client = new Client(id.toString());
+        //Client client = new Client(id.toString());
 
         int priority = jsonObject.get("priority").getAsInt();
         int line = jsonObject.get("line").getAsInt();
         int character = jsonObject.get("character").getAsInt();
         String edit = jsonObject.get("edit").toString();
 
-        return new EditRequest(client, priority, line, character, edit);
+       // return new EditRequest(client, priority, line, character, edit);
+        return null;
     }
 }

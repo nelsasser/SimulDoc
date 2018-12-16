@@ -2,6 +2,7 @@ package main.webapp.com.nelsasser.app;
 
 import main.webapp.com.nelsasser.app.document.Document;
 import main.webapp.com.nelsasser.app.manager.DocumentManager;
+import main.webapp.com.nelsasser.app.utils.ServerUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class DocumentKeeper {
     }
 
     public static boolean isDocumentOpen(String docId) {
-        return openDocuments.containsKey(docId);
+        return openDocuments.containsKey(ServerUtils.createUniqueID(64, docId));
     }
 
     public static Document getDocument(String docId) {

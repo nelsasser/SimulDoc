@@ -1,10 +1,17 @@
 package main.webapp.com.nelsasser.app.utils;
 
+import com.sun.net.httpserver.HttpExchange;
 import java.awt.*;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
 
 public class ServerUtils {
+
+    public static final int SUCCESS = 200;
+    public static final int SERVER_ERROR = 500;
+    public static final int CLIENT_ERROR = 400;
 
     private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String lower = upper.toLowerCase();
@@ -52,15 +59,22 @@ public class ServerUtils {
         return hex;
     }
 
-    public static String createUniqueID(int len) {
+    public static String createUniqueID(int len, String seed) {
         String id = "";
 
-        Random r = new Random();
+        Random r = new Random(seed.hashCode());
 
         for(int i = 0; i < len; i++) {
             id += "" + alphanum.charAt(r.nextInt(alphanum.length() - 1));
         }
 
         return id;
+    }
+
+    public static void sendResponse(int code, String response, HttpExchange httpExchange) throws IOException {
+        httpExchange.sendResponseHeaders(code, response.length());
+        OutputStream outputStream = httpExchange.getResponseBody();
+        outputStream.write(response.getBytes());
+        outputStream.close();
     }
 }

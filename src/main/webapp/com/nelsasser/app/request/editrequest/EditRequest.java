@@ -22,7 +22,7 @@ public class EditRequest extends Request {
 
         jsonObject.addProperty("header", JSONHeaders.EDIT_REQUEST);
 
-        jsonObject.add("user", this.getUser().getAsJsonObject());
+        //jsonObject.add("user", this.getUser().getAsJsonObject());
         jsonObject.addProperty("priority", this.getPriority());
         jsonObject.addProperty("line", this.getLine());
         jsonObject.addProperty("number", this.getCharacter());
